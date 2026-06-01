@@ -1,0 +1,35 @@
+name: Deploy Frontend to Production
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Navigate to web directory
+            cd ~/neobuy-web
+
+            # Pull latest changes from prod branch
+            git checkout prod
+            git pull origin prod
+
+            # Install packages and build production assets
+            npm install
+            npm run build
+
+            # Start or restart Next.js in the background via PM2
+            pm2 restart "npm run start" --name "neobuy-frontend" || pm2 start "npm run start" --name "neobuy-frontend" -- --port 3000
