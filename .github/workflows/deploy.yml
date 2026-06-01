@@ -32,4 +32,4 @@ jobs:
             npm run build
 
             # Start or restart Next.js in the background via PM2
-            pm2 restart "npm run start" --name "neobuy-frontend" || pm2 start "npm run start" --name "neobuy-frontend" -- --port 3000
+            # pm2 restart "npm run start" --name "neobuy-frontend" || pm2 start "npm run start" --name "neobuy-frontend" -- --port 3000
